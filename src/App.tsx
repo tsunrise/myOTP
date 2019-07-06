@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {BrowserRouter, Route, Link} from "react-router-dom";
-import {Master} from "./components/Master";
+import {HashRouter, Route} from "react-router-dom";
+import {Viewer} from "./components/Viewer/Viewer";
 import './App.css';
 
 interface AppProp {
@@ -13,14 +13,14 @@ interface AppState {
 
 class App extends React.Component<AppProp, AppState> {
     render() {
-        return <BrowserRouter>
+        return <HashRouter>
             <div className="App">
-            Hello World
+            MYOTP App
                 <br/>
                 <Route path="/" exact/>
-                <Route path="/:id" component={Master}/>
+                <Route path="/view" component={Viewer}/>
         </div>
-        </BrowserRouter>;
+        </HashRouter>;
 
     };
 }

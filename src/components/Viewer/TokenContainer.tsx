@@ -1,37 +1,77 @@
 import * as React from "react";
-import {RouteComponentProps} from "react-router";
+import {authenticator} from "otplib";
+import {TimeLeft} from "./TimeLeft";
 
-interface RouteParams{
+
+interface Props{
     token: string
-}
-
-interface Props extends RouteComponentProps<RouteParams>{
-
 }
 
 interface States{
-    timerID?: number, // todo: need to be destroyed somewhere
-    token: string
+    timerID?: number,
+    token: string,
+    numPass: string,
+    nextUpdate: number
 }
 
 export class TokenContainer extends React.Component<Props, States>{
 
     constructor(props: Props){
         super(props);
+        this.checkUpdate = this.checkUpdate.bind(this);
+        this.periodUpdate = this.periodUpdate.bind(this);
+
+        // check init next update time
+        const sec: number = (new Date()).getSeconds();
+        const next: number = 30 - ((sec - 1) % 30);
+
         this.state = {
-            token:  props.match.params.token
+            token:  props.token,
+            timerID: window.setInterval(this.checkUpdate, 1000),
+            numPass: authenticator.generate(props.token),
+            nextUpdate: Date.now() + next * 1000
+        };
+
+    }
+
+    /**
+     * Every second, check if the system time is 0 or 30s.
+     * If true, do the call back.
+     * Otherwise, pass.
+     */
+    async checkUpdate(): Promise<void>{
+        const sec = (new Date()).getSeconds();
+        if (sec === 1|| sec === 31) {
+            this.periodUpdate().then();
+            this.setState({nextUpdate: Date.now() + 30000})
+
         }
     }
 
+    async periodUpdate(): Promise<void> {
+        console.log("Updated");
+        this.setState({numPass: authenticator.generate(this.state.token)})
+        // to something
+    };
+
     componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<States>, snapshot?: any): void {
         // Check if the token parameter is updated.
-        if (prevProps.match.params.token !== this.props.match.params.token) {
-            this.setState({token: this.props.match.params.token})
+        if (prevProps.token !== this.props.token) {
+            this.setState({token: this.props.token,
+                numPass: authenticator.generate(this.props.token)})
         }
+    }
+
+    componentWillUnmount(): void {
+        clearInterval(this.state.timerID);
+        this.setState({timerID: undefined})
     }
 
     render(): React.ReactNode {
 
-        return <div>Current Token is: {this.state.token}</div>
+        return <div>
+            Current PassCode is: {this.state.numPass}
+            <TimeLeft nextUpdate={this.state.nextUpdate} maxTimeLeft={30000}/>
+        </div>
     }
 }

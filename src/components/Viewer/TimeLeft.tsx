@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {Stack, ProgressIndicator} from "office-ui-fabric-react";
 
 interface Props {
     /**
@@ -18,7 +19,7 @@ export class TimeLeft extends React.Component<Props, State>{
     constructor(props: Props){
         super(props);
         this._updateRemainTime = this._updateRemainTime.bind(this);
-        this.state = {timerID: window.setInterval(this._updateRemainTime, 100),remainTime:0,
+        this.state = {timerID: window.setInterval(this._updateRemainTime, 50),remainTime:0,
         percentageDone:0}
     }
 
@@ -34,12 +35,9 @@ export class TimeLeft extends React.Component<Props, State>{
     }
 
     render(): React.ReactNode {
-        return <div>
-            <ul>
-                <li>Time Left: {Math.round(this.state.remainTime / 100) / 10}s</li>
-                <li>Percentage Done: {Math.round(this.state.percentageDone)}</li>
-            </ul>
-        </div>;
+        return <Stack>
+            <ProgressIndicator description={Math.round(this.state.remainTime / 1000)} percentComplete={this.state.percentageDone / 100}/>
+        </Stack>;
     }
 
 

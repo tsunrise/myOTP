@@ -1,6 +1,7 @@
 import * as React from "react";
 import {authenticator} from "otplib";
 import {TimeLeft} from "./TimeLeft";
+import {Stack, Text} from "office-ui-fabric-react";
 
 
 interface Props{
@@ -69,9 +70,11 @@ export class TokenContainer extends React.Component<Props, States>{
 
     render(): React.ReactNode {
 
-        return <div>
-            Current PassCode is: {this.state.numPass}
+        return <Stack>
+            <Stack.Item align={"center"}>
+                <Text variant="xxLarge">{this.state.numPass}</Text>
+            </Stack.Item>
             <TimeLeft nextUpdate={this.state.nextUpdate} maxTimeLeft={30000}/>
-        </div>
+        </Stack>
     }
 }

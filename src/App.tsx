@@ -17,7 +17,11 @@ class App extends React.Component<AppProp, AppState> {
         return <HashRouter>
             <Stack className="App">
                 <Stack.Item align="center" className={styles.centralBox}>
-                    <span>MyOTP</span>
+                    <Stack>
+                        <Stack.Item align={"center"}>
+                            <h3>MyOTP</h3>
+                        </Stack.Item>
+                    </Stack>
                     <Route path="/" exact/>
                     <Route path="/view" component={Viewer}/>
                 </Stack.Item>

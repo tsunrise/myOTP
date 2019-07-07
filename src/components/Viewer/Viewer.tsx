@@ -28,7 +28,7 @@ export class Viewer extends React.Component<ViewerProps, ViewerState>{
 
     render(): React.ReactNode {
         return <div>
-            <h3>Viewer</h3>
+            <h3>Title Here</h3>
             <Route path={this.props.match.url + '/'} exact component={Unspecified}/>
             <Route path={this.props.match.url + '/:token'} component={UrlTokenFrame} />
         </div>;

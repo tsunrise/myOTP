@@ -36,7 +36,7 @@ export class TimeLeft extends React.Component<Props, State>{
 
     render(): React.ReactNode {
         return <Stack>
-            <ProgressIndicator description={Math.round(this.state.remainTime / 1000)} percentComplete={this.state.percentageDone / 100}/>
+            <ProgressIndicator percentComplete={this.state.percentageDone / 100}/>
         </Stack>;
     }
 

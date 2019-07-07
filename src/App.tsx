@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {HashRouter, Route} from "react-router-dom";
 import {Viewer} from "./components/Viewer/Viewer";
-import {Stack, Text} from "office-ui-fabric-react";
+import {Stack} from "office-ui-fabric-react";
 import styles from './App.module.css';
 
 interface AppProp {

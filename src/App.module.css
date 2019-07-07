@@ -1,11 +1,11 @@
 .centralBox{
     margin-top: 50px;
-    width: 95%;
+    width: 95% !important;
 }
 
 @media (min-width: 400px) {
     .centralBox{
-    width: 380px;
+    width: 380px !important;
     }
 }
 

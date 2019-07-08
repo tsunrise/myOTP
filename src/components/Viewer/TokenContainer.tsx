@@ -2,10 +2,15 @@ import * as React from "react";
 import {authenticator} from "otplib";
 import {TimeLeft} from "./TimeLeft";
 import {Stack, Text} from "office-ui-fabric-react";
+import styles from "./TokenContainer.module.css";
 
 
 interface Props{
-    token: string
+    token: string,
+    title?: string,
+    ticketID?: string,
+    supportURL?: string,
+    barcodePattern?: (numPass: number) => string,
 }
 
 interface States{
@@ -21,6 +26,7 @@ export class TokenContainer extends React.Component<Props, States>{
         super(props);
         this.checkUpdate = this.checkUpdate.bind(this);
         this.periodUpdate = this.periodUpdate.bind(this);
+        this.defaultID = this.defaultID.bind(this);
 
         // check init next update time
         const sec: number = (new Date()).getSeconds();
@@ -44,16 +50,25 @@ export class TokenContainer extends React.Component<Props, States>{
         const sec = (new Date()).getSeconds();
         if (sec === 1|| sec === 31) {
             this.periodUpdate().then();
-            this.setState({nextUpdate: Date.now() + 30000})
+            return;
+        }
 
+        // deal with browser timing glitch
+        if (Date.now() > this.state.nextUpdate) {
+            console.warn("A Browser Timing Glitch Happened. ");
+            this.periodUpdate().then();
         }
     }
 
     async periodUpdate(): Promise<void> {
         console.log("Updated");
-        this.setState({numPass: authenticator.generate(this.state.token)})
+        this.setState({numPass: authenticator.generate(this.state.token), nextUpdate: Date.now() + 30000})
         // to something
     };
+
+    defaultID(): string{
+        return this.props.token.slice(0,5).toUpperCase()
+    }
 
     componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<States>, snapshot?: any): void {
         // Check if the token parameter is updated.
@@ -71,6 +86,12 @@ export class TokenContainer extends React.Component<Props, States>{
     render(): React.ReactNode {
 
         return <Stack>
+            <Stack.Item align="center"  className={styles.marginDown}>
+                <Text variant="mediumPlus">{this.props.title || "MyOTP"}</Text>
+            </Stack.Item>
+            <Stack.Item align="center">
+                <Text variant="xLarge" className={styles.marginDown}>{this.props.ticketID || this.defaultID()}</Text>
+            </Stack.Item>
             <Stack.Item align={"center"}>
                 <Text variant="xxLarge">{this.state.numPass}</Text>
             </Stack.Item>

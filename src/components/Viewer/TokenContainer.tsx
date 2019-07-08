@@ -2,7 +2,9 @@ import * as React from "react";
 import {authenticator} from "otplib";
 import {TimeLeft} from "./TimeLeft";
 import {Stack, Text} from "office-ui-fabric-react";
+
 import styles from "./TokenContainer.module.css";
+import {Barcode} from "./Barcode";
 
 
 interface Props{
@@ -39,6 +41,8 @@ export class TokenContainer extends React.Component<Props, States>{
             nextUpdate: Date.now() + next * 1000
         };
 
+        document.title = this.props.title || "MyOTP";
+
     }
 
     /**
@@ -67,7 +71,7 @@ export class TokenContainer extends React.Component<Props, States>{
     };
 
     defaultID(): string{
-        return this.props.token.slice(0,5).toUpperCase()
+        return this.props.token.slice(0,6).toUpperCase()
     }
 
     componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<States>, snapshot?: any): void {
@@ -96,6 +100,9 @@ export class TokenContainer extends React.Component<Props, States>{
                 <Text variant="xxLarge">{this.state.numPass}</Text>
             </Stack.Item>
             <TimeLeft nextUpdate={this.state.nextUpdate} maxTimeLeft={30000}/>
+            <Stack.Item align="center">
+                <Barcode code={(this.props.ticketID || this.defaultID()) + this.state.numPass}/>
+            </Stack.Item>
         </Stack>
     }
 }

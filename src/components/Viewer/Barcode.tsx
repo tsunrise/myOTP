@@ -1,6 +1,5 @@
 import * as React from "react";
 import JsBarcode from "jsbarcode";
-import {Stack} from "office-ui-fabric-react";
 
 interface Props {
     code: string

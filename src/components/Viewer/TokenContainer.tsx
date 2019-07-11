@@ -5,6 +5,7 @@ import {Stack, Text} from "office-ui-fabric-react";
 
 import styles from "./TokenContainer.module.css";
 import {Barcode} from "./Barcode";
+import {NumPassViewer} from "./NumPassViewer";
 
 
 interface Props{
@@ -13,6 +14,7 @@ interface Props{
     ticketID?: string,
     supportURL?: string,
     barcodePattern?: (numPass: number) => string,
+    barcode?: boolean
 }
 
 interface States{
@@ -88,6 +90,10 @@ export class TokenContainer extends React.Component<Props, States>{
     }
 
     render(): React.ReactNode {
+        const barcode = this.props.barcode ?
+            <Stack.Item align="center">
+            <Barcode code={(this.props.ticketID || this.defaultID()) + this.state.numPass}/>
+        </Stack.Item> : null;
 
         return <Stack>
             <Stack.Item align="center"  className={styles.marginDown}>
@@ -97,12 +103,10 @@ export class TokenContainer extends React.Component<Props, States>{
                 <Text variant="xLarge" className={styles.marginDown}>{this.props.ticketID || this.defaultID()}</Text>
             </Stack.Item>
             <Stack.Item align={"center"}>
-                <Text variant="xxLarge">{this.state.numPass}</Text>
+                <NumPassViewer out={this.state.numPass}/>
             </Stack.Item>
             <TimeLeft nextUpdate={this.state.nextUpdate} maxTimeLeft={30000}/>
-            <Stack.Item align="center">
-                <Barcode code={(this.props.ticketID || this.defaultID()) + this.state.numPass}/>
-            </Stack.Item>
+            {barcode}
         </Stack>
     }
 }

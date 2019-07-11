@@ -12,14 +12,6 @@ interface State{
 export class NumPassViewer extends React.Component<Props, State>{
     el: HTMLElement | null = null;
 
-    constructor(props: Props) {
-        super(props);
-        this.state = {
-            show: this.props.out.toString(),
-            remain: 0
-        }
-    }
-
     public static randomNumString(len: number): string{
         let ans: string = "";
         for (let i = 0; i < len; i++) {
@@ -30,6 +22,9 @@ export class NumPassViewer extends React.Component<Props, State>{
     }
 
     componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>, snapshot?: any): void {
+        if (prevProps.out === this.props.out) {
+            return;
+        }
         let remain = 7;
         let id = window.setInterval(() => {
             if (remain > 0) {

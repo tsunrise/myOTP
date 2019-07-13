@@ -8,25 +8,25 @@ import {Barcode} from "./Barcode";
 import {NumPassViewer} from "./NumPassViewer";
 
 
-interface Props{
+interface Props {
     token: string,
     title?: string,
     ticketID?: string,
     description?: string,
-    barcodePattern?: (numPass: number) => string,
+    barcodePattern?: ((numPass: string) => string) | null,
     barcode?: boolean
 }
 
-interface States{
+interface States {
     timerID?: number,
     token: string,
     numPass: string,
     nextUpdate: number
 }
 
-export class TokenContainer extends React.Component<Props, States>{
+export class TokenContainer extends React.Component<Props, States> {
 
-    constructor(props: Props){
+    constructor(props: Props) {
         super(props);
         this.checkUpdate = this.checkUpdate.bind(this);
         this.periodUpdate = this.periodUpdate.bind(this);
@@ -37,7 +37,7 @@ export class TokenContainer extends React.Component<Props, States>{
         const next: number = 30 - ((sec - 1) % 30);
 
         this.state = {
-            token:  props.token,
+            token: props.token,
             timerID: window.setInterval(this.checkUpdate, 1000),
             numPass: authenticator.generate(props.token),
             nextUpdate: Date.now() + next * 1000
@@ -52,9 +52,9 @@ export class TokenContainer extends React.Component<Props, States>{
      * If true, do the call back.
      * Otherwise, pass.
      */
-    async checkUpdate(): Promise<void>{
+    async checkUpdate(): Promise<void> {
         const sec = (new Date()).getSeconds();
-        if (sec === 1|| sec === 31) {
+        if (sec === 1 || sec === 31) {
             this.periodUpdate().then();
             return;
         }
@@ -72,15 +72,17 @@ export class TokenContainer extends React.Component<Props, States>{
         // to something
     };
 
-    defaultID(): string{
-        return this.props.token.slice(0,6).toUpperCase()
+    defaultID(): string {
+        return this.props.token.slice(0, 6).toUpperCase()
     }
 
     componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<States>, snapshot?: any): void {
         // Check if the token parameter is updated.
         if (prevProps.token !== this.props.token) {
-            this.setState({token: this.props.token,
-                numPass: authenticator.generate(this.props.token)})
+            this.setState({
+                token: this.props.token,
+                numPass: authenticator.generate(this.props.token)
+            })
         }
     }
 
@@ -92,11 +94,13 @@ export class TokenContainer extends React.Component<Props, States>{
     render(): React.ReactNode {
         const barcode = this.props.barcode ?
             <Stack.Item align="center">
-            <Barcode code={(this.props.ticketID || this.defaultID()) + this.state.numPass}/>
-        </Stack.Item> : null;
+                <Barcode code={this.props.barcodePattern ?
+                    this.props.barcodePattern(this.state.numPass) :
+                    (this.props.ticketID || this.defaultID()).slice(0,6) + this.state.numPass}/>
+            </Stack.Item> : null;
 
         return <Stack>
-            <Stack.Item align="center"  className={styles.marginDown}>
+            <Stack.Item align="center" className={styles.marginDown}>
                 <Text variant="mediumPlus">{this.props.title || "MyOTP"}</Text>
             </Stack.Item>
             <Stack.Item align="center">

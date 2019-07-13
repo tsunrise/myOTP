@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {HashRouter, Route} from "react-router-dom";
+import {HashRouter,  Route} from "react-router-dom";
 import {Viewer} from "./components/Viewer/Viewer";
 import {Stack} from "office-ui-fabric-react";
 import styles from './App.module.css';
@@ -17,7 +17,7 @@ class App extends React.Component<AppProp, AppState> {
         return <HashRouter>
             <Stack className="App">
                 <Stack.Item align="center" className={styles.centralBox}>
-                    <Route path="/" exact/>
+                    <Route path="/" component={()=><div>Index Page</div>} exact/>
                     <Route path="/view" component={Viewer}/>
                 </Stack.Item>
 

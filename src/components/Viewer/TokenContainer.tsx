@@ -12,7 +12,7 @@ interface Props{
     token: string,
     title?: string,
     ticketID?: string,
-    supportURL?: string,
+    description?: string,
     barcodePattern?: (numPass: number) => string,
     barcode?: boolean
 }
